@@ -1,0 +1,29 @@
+package Example;
+
+import java_cup.runtime.*;
+
+parser code {:
+	public static void main(String args[]) throws Exception {
+		SymbolFactory sf = new DefaultSymbolFactory();
+		if (args.length==0) new Parser(new Scanner(System.in,sf),sf).parse();
+		else new Parser(new Scanner(new java.io.FileInputStream(args[0]),sf),sf).parse();
+	}
+:}
+
+terminal COMMA, LSQBRACKET, RSQBRACKET, LBRACE, RBRACE, COLON, NULL;
+terminal Boolean BOOLEAN;
+terminal Integer NUMBER;
+terminal String STRING;
+
+non terminal object, members, pair, array,elements,value,null;
+non terminal Boolean boolean;
+non terminal Integer integer;
+non terminal String string;
+
+object 	::= LBRACE RBRACE | LBRACE members RBRACE;
+members ::= members COMMA pair | pair; 
+pair 	::= STRING COLON value;
+array 	::= LSQBRACKET RSQBRACKET | LSQBRACKET elements RSQBRACKET;
+elements::= elements COMMA value | value;   
+value 	::= NULL | BOOLEAN:b{:System.out.println("value:"+b);:} | NUMBER:i{:System.out.println("value:"+i);:} | STRING:s {:System.out.println("value:"+s);:}| object| array;                 
+
